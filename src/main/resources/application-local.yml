@@ -1,0 +1,12 @@
+spring:
+  config:
+    # Carrega o mesmo arquivo local que o Docker Compose usa; não versionar.
+    import: "optional:file:.env[.properties]"
+  datasource:
+    url: jdbc:postgresql://localhost:${LOCAL_DB_PORT:5432}/sacra_edu
+    username: sacra_app
+    password: ${LOCAL_APP_PASSWORD}
+  flyway:
+    url: jdbc:postgresql://localhost:${LOCAL_DB_PORT:5432}/sacra_edu?connectTimeout=10&socketTimeout=120
+    user: sacra_migrator
+    password: ${LOCAL_MIGRATION_PASSWORD}

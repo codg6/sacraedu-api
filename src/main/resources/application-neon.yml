@@ -1,0 +1,13 @@
+# Ative somente para testes na nuvem: SPRING_PROFILES_ACTIVE=neon.
+# Sem fallback local: variáveis ausentes devem impedir a conexão.
+spring:
+  datasource:
+    # JDBC pooled com TLS; validar certificado/hostname no ambiente alvo.
+    url: ${NEON_DATABASE_URL}
+    username: ${NEON_DATABASE_USERNAME}
+    password: ${NEON_DATABASE_PASSWORD}
+  flyway:
+    # Endpoint direto, role de migração e timeouts definidos na URL JDBC.
+    url: ${NEON_MIGRATION_URL}
+    user: ${NEON_MIGRATION_USERNAME}
+    password: ${NEON_MIGRATION_PASSWORD}

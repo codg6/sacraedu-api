@@ -1,0 +1,29 @@
+# Nome fixo evita criar outro projeto ao mover a pasta.
+name: sacra-edu-local
+services:
+  postgres:
+    image: postgres:17
+    container_name: sacra-edu-postgres-local
+    environment:
+      POSTGRES_DB: sacra_edu
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${LOCAL_ADMIN_PASSWORD:?Defina LOCAL_ADMIN_PASSWORD no .env}
+      LOCAL_APP_PASSWORD: ${LOCAL_APP_PASSWORD:?Defina LOCAL_APP_PASSWORD no .env}
+      LOCAL_MIGRATION_PASSWORD: ${LOCAL_MIGRATION_PASSWORD:?Defina LOCAL_MIGRATION_PASSWORD no .env}
+    # Apenas a máquina local pode acessar esta porta.
+    ports:
+      - "127.0.0.1:${LOCAL_DB_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/postgres/01-roles.sh:/docker-entrypoint-initdb.d/01-roles.sh:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sacra_edu"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 15s
+    restart: unless-stopped
+volumes:
+  postgres_data:
+    # Nome estável: repetir up reutiliza os mesmos dados.
+    name: sacra-edu-postgres-data
